@@ -1,0 +1,41 @@
+[package]
+name = "atlas-bitlocker"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT OR Apache-2.0"
+description = "Read BitLocker encrypted volumes: FVE metadata, password and recovery-password unlock, AES-XTS and AES-CBC sector decryption."
+repository = "https://github.com/05Narwhal/atlas-bitlocker"
+readme = "README.md"
+keywords = ["bitlocker", "encryption", "disk", "windows", "parser"]
+categories = ["filesystem", "parser-implementations"]
+authors = ["Julian A. Loy"]
+
+[features]
+# A synthetic volume builder, for crates that test against this one.
+test-util = ["atlas-luks/test-util"]
+
+[dependencies]
+atlas-fs-core = { version = "0.1", path = "X:/Documents/Coding/Projects/Libraries/Rust/atlas-fs-core" }
+atlas-luks = { version = "0.1", path = "X:/Documents/Coding/Projects/Libraries/Rust/atlas-luks" }
+# The key stretch (SHA-256 chain).
+sha2 = { version = "0.11", default-features = false, features = ["zeroize"] }
+# Secrets are wiped when dropped.
+zeroize = { version = "1", default-features = false, features = ["alloc"] }
+
+[dev-dependencies]
+# The XTS encryptor the synthetic volume builder uses.
+atlas-luks = { version = "0.1", path = "X:/Documents/Coding/Projects/Libraries/Rust/atlas-luks", features = ["test-util"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+unused_must_use = "deny"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+dbg_macro = "warn"
+todo = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+undocumented_unsafe_blocks = "deny"
