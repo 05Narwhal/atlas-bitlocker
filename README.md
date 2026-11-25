@@ -1,6 +1,6 @@
 # atlas-bitlocker
 
-<!-- badges -->[![crates.io](https://img.shields.io/crates/v/atlas-bitlocker.svg)](https://crates.io/crates/atlas-bitlocker) [![docs.rs](https://img.shields.io/docsrs/atlas-bitlocker)](https://docs.rs/atlas-bitlocker) [![CI](https://github.com/05Narwhal/atlas-bitlocker/actions/workflows/ci.yml/badge.svg)](https://github.com/05Narwhal/atlas-bitlocker/actions/workflows/ci.yml) ![License](https://img.shields.io/crates/l/atlas-bitlocker.svg)
+[![crates.io](https://img.shields.io/crates/v/atlas-bitlocker.svg)](https://crates.io/crates/atlas-bitlocker) [![docs.rs](https://img.shields.io/docsrs/atlas-bitlocker)](https://docs.rs/atlas-bitlocker) [![CI](https://github.com/05Narwhal/atlas-bitlocker/actions/workflows/ci.yml/badge.svg)](https://github.com/05Narwhal/atlas-bitlocker/actions/workflows/ci.yml) ![License](https://img.shields.io/crates/l/atlas-bitlocker.svg)
 
 Reads BitLocker volumes (Windows 7 and later). `bitlocker::open` parses the FVE metadata, `BitLocker::unlock_source` finds the volume key from a password or a recovery password and returns a `BlockSource` that decrypts the volume sector by sector (AES-XTS, AES-CBC). Built on `atlas-luks`.
 
