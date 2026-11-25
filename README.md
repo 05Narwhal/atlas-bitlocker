@@ -2,13 +2,51 @@
 
 [![crates.io](https://img.shields.io/crates/v/atlas-bitlocker.svg)](https://crates.io/crates/atlas-bitlocker) [![docs.rs](https://img.shields.io/docsrs/atlas-bitlocker)](https://docs.rs/atlas-bitlocker) [![CI](https://github.com/05Narwhal/atlas-bitlocker/actions/workflows/ci.yml/badge.svg)](https://github.com/05Narwhal/atlas-bitlocker/actions/workflows/ci.yml) ![License](https://img.shields.io/crates/l/atlas-bitlocker.svg)
 
-Reads BitLocker volumes (Windows 7 and later). `bitlocker::open` parses the FVE metadata, `BitLocker::unlock_source` finds the volume key from a password or a recovery password and returns a `BlockSource` that decrypts the volume sector by sector (AES-XTS, AES-CBC). Built on `atlas-luks`.
+**Read BitLocker volumes (Windows 7 and later): unlock with a password or recovery password and read the decrypted volume as a `BlockSource`.**
 
-- **Not yet verified against a volume made by Windows**: the tests use a synthetic volume built from the public description, plus the RFC 3610 and IEEE 1619 vectors.
-- `bitlocker::mount(source, mounter)` gives one locked volume whose `unlock` decrypts the volume and passes it to the `Mounter` you supply.
-- Protectors that need hardware or a key file (TPM, startup key) are skipped; the elephant diffuser is not supported.
-- Secrets live in `Zeroizing` buffers; no key-holding type derives `Debug`.
-- No `unsafe`. Every length, offset and count read from the disk is checked; damage is an error, not a panic.
+`atlas-bitlocker` parses the FVE metadata, finds the volume key, and returns a `BlockSource` that decrypts the volume sector by sector as it is read. Reading only: nothing here writes. Built on `atlas-luks`.
+
+> **Not yet verified against a volume made by Windows.** The tests use a synthetic volume built from the public description, plus the RFC 3610 and IEEE 1619 test vectors. Treat results from real volumes as unconfirmed until that check is done.
+
+## Features
+
+- **Password** and **recovery password** unlock.
+- **AES-XTS and AES-CBC** sector decryption.
+- `bitlocker::mount(source, mounter)` gives one locked volume whose `unlock` decrypts the volume and passes it to a `Mounter` you supply.
+
+## Quick start
+
+```rust,no_run
+use std::path::Path;
+use std::sync::Arc;
+
+use atlas_fs_core::io::block::BlockSource;
+use atlas_fs_core::io::file::FileSource;
+
+let source: Arc<dyn BlockSource> = Arc::new(FileSource::open(Path::new("volume.img"))?);
+let volume = atlas_bitlocker::bitlocker::open(source)?;
+let payload = volume.unlock_source("password")?;
+println!("{} bytes of decrypted volume", payload.len());
+```
+
+## Limits
+
+Protectors that need hardware or a key file (TPM, startup key) are skipped, and the elephant diffuser is not supported.
+
+## Handling secrets
+
+The password, derived keys, and the volume and full-volume keys live in `Zeroizing` buffers and are wiped when dropped. No key-holding type derives `Debug`. Sector decryption, key derivation and AES-XTS come from `atlas-luks`; the AES-CCM that wraps BitLocker's keys is private to this crate.
+
+## Safety and robustness
+
+- **No `unsafe`.** The crate is `#![forbid(unsafe_code)]`.
+- **On-disk bytes are hostile.** Every length, offset and count read from a disk is validated before use. Damage is returned as an error, never a panic, an unchecked index or an unbounded loop.
+- **Lints enforce it.** Clippy's `indexing_slicing`, `arithmetic_side_effects`, `unwrap_used`, `expect_used` and `panic` lints are on for the library code.
+- **Read-only.** Nothing in this crate writes to a disk or image.
+
+## Feature flags
+
+- `test-util`: exposes the synthetic test image builders and fuzz seed inputs this crate's own tests use, for tests of crates built on it. It is not part of the stable API.
 
 ## Install
 
@@ -17,7 +55,9 @@ Reads BitLocker volumes (Windows 7 and later). `bitlocker::open` parses the FVE 
 atlas-bitlocker = "26.0.1-a"
 ```
 
-Minimum supported Rust version: 1.88.
+Versions follow `26.MAJOR.MINOR-STAGE`: the year, the major and minor version, and a stage letter (`a` alpha, `b` beta, `s` stable). Cargo treats a stage suffix as a pre-release, so name the version exactly as above.
+
+Minimum supported Rust version: 1.88 (edition 2024).
 
 ## Licence
 
