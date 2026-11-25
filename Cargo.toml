@@ -6,6 +6,7 @@ rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 description = "Read BitLocker encrypted volumes: FVE metadata, password and recovery-password unlock, AES-XTS and AES-CBC sector decryption."
 repository = "https://github.com/05Narwhal/atlas-bitlocker"
+homepage = "https://julianloy.com"
 readme = "README.md"
 keywords = ["bitlocker", "encryption", "disk", "windows", "parser"]
 categories = ["filesystem", "parser-implementations"]
