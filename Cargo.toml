@@ -1,6 +1,6 @@
 [package]
 name = "atlas-bitlocker"
-version = "0.1.0"
+version = "26.0.1-a"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT OR Apache-2.0"
@@ -17,8 +17,8 @@ authors = ["Julian A. Loy"]
 test-util = ["atlas-luks/test-util"]
 
 [dependencies]
-atlas-fs-core = { version = "0.1", path = "../atlas-fs-core" }
-atlas-luks = { version = "0.1", path = "../atlas-luks" }
+atlas-fs-core = { version = "26.0.1-a", path = "../atlas-fs-core" }
+atlas-luks = { version = "26.0.1-a", path = "../atlas-luks" }
 # The key stretch (SHA-256 chain).
 sha2 = { version = "0.11", default-features = false, features = ["zeroize"] }
 # Secrets are wiped when dropped.
@@ -26,7 +26,7 @@ zeroize = { version = "1", default-features = false, features = ["alloc"] }
 
 [dev-dependencies]
 # The XTS encryptor the synthetic volume builder uses.
-atlas-luks = { version = "0.1", path = "../atlas-luks", features = ["test-util"] }
+atlas-luks = { version = "26.0.1-a", path = "../atlas-luks", features = ["test-util"] }
 
 [lints.rust]
 unsafe_code = "forbid"

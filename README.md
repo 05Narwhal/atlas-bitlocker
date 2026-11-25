@@ -14,7 +14,7 @@ Reads BitLocker volumes (Windows 7 and later). `bitlocker::open` parses the FVE 
 
 ```toml
 [dependencies]
-atlas-bitlocker = "0.1"
+atlas-bitlocker = "26.0.1-a"
 ```
 
 Minimum supported Rust version: 1.88.
